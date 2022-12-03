@@ -8,7 +8,13 @@ JPG/JPEG only
 Install python package dependencies
 ```bash
   sudo su
-  apt install python3.8 python3.8-venv
+  apt install python3.8 python3.8-venv python3.8-pip
+``` 
+
+or if you're already have python3 package
+```bash
+  sudo su
+  apt install python3 python3-venv python3-pip
 ``` 
 
 Go to working directory
