@@ -19,7 +19,7 @@ Go to working directory
 
 Clone the project and to the project directory
 ```bash
-  git clone https://github.com/and-zee/gd-compress-image.git app && cd app
+  git clone https://github.com/and-zee/gd-compress-image.git app
 ```
 
 Export env, update python binary alias, and create python3 virtual environment
@@ -30,6 +30,7 @@ Export env, update python binary alias, and create python3 virtual environment
   . ~/.bashrc
   python3 -m venv env
   . /opt/env/bin/activate
+  cd app
 ```
 
 Install required module
