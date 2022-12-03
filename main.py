@@ -91,6 +91,8 @@ def main(_basepath, only=False, onlyreplace=False, replace=False):
         
         for file in os.listdir(_basepath):
             filepath=str(_basepath)+"/"+file
+            basefilename=os.path.basename(filepath)
+            if basefilename == "_process.log": continue
             if os.path.splitext(file)[1].lower() in formats:
                 logger.info("Compressing "+str(file))
                 img_size, new_img_size = compressReplaceImg(filepath)
@@ -127,6 +129,8 @@ def main(_basepath, only=False, onlyreplace=False, replace=False):
             for month in os.listdir(str(account_dir)):
                 # Loop through all days
                 days = str(account_dir)+"/"+month
+                basefilename=os.path.basename(days)
+                if basefilename == "_process.log": continue
                 for day in os.listdir(days):
                     # Loop through all hours
                     hours = str(days)+"/"+day
