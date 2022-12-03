@@ -44,6 +44,17 @@ Install required module
   pip-3 install -r requirements.txt
 ```
 
+if you catch some errors try this
+```bash
+  pip-3 install -r requirements-general.txt
+```
+
+Alternatively if you still catch some errors while installing PIL, try folllowing command
+```bash
+  python-3 -m pip install --upgrade pip
+  python-3 -m pip install --upgrade Pillow
+```
+
 Test if all module are installed correctly
 ```bash
   python-3 main.py --test
