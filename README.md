@@ -47,9 +47,9 @@ Test if all module are installed correctly
 
 Update .env
 - set `REPLACE` to `True`  : to replace all files while compressing image
-- set `REPLACE` to `False` : compressed image will be created into new file
-- set `DESTINATION_DIR` to where commpressed image will be place this directory will be used when `REPLACE` is set to `FALSE`
-- set `SOURCE_DIR` to where image will loaded
+- set `REPLACE` to `False` : compressed image will be created into a new file
+- set `DESTINATION_DIR` to where commpressed image will be place, this directory will be used when `REPLACE` is set to `FALSE`
+- set `SOURCE_DIR` to where image will be load
 
 Start the program
 ```bash
