@@ -31,8 +31,8 @@ Clone the project and to the project directory
 Export env, update python binary alias, and create python3 virtual environment
 ```bash
   echo "export env='/opt/app/.env'" | tee -a ~/.bashrc
-  echo "alias python3='/opt/env/bin/python3'" | tee -a ~/.bashrc
-  echo "alias pip3='/opt/env/bin/pip3'" | tee -a ~/.bashrc
+  echo "export python3='/opt/env/bin/python3'" | tee -a ~/.bashrc
+  echo "export pip3='/opt/env/bin/pip3'" | tee -a ~/.bashrc
   . ~/.bashrc
   python3 -m venv env
   . /opt/env/bin/activate
