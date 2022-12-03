@@ -44,3 +44,14 @@ Test if all module are installed correctly
 ```bash
   python3 main.py --test
 ```
+
+Update .env
+- set `REPLACE` to `True`  : to replace all files while compressing image
+- set `REPLACE` to `False` : compressed image will be created into new file
+- set `DESTINATION_DIR` to where commpressed image will be place this directory will be used when `REPLACE` is set to `FALSE`
+- set `SOURCE_DIR` to where image will loaded
+
+Start the program
+```bash
+pyrhon3 main.py
+```
