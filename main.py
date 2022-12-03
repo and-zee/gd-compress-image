@@ -246,8 +246,7 @@ def paramTest():
     if args.test: return True
     else: return False
 
-# Driver code
-if __name__ == "__main__":
+def init():
     test = paramTest()
     if test:
         from PIL import Image
@@ -270,3 +269,7 @@ if __name__ == "__main__":
     
     _only, _basepath, _onlyreplace = checkParam()
     main(_basepath=str(_basepath), only=_only, onlyreplace=_onlyreplace, replace=_replace)
+
+# Driver code
+if __name__ == "__main__":
+    init()
