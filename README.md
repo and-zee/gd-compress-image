@@ -17,23 +17,19 @@ Go to working directory
   cd /opt
 ```
 
-Create python3 virtual environment
-```bash
-  python3 -m venv env
-  . env/bin/activate
-```
-
 Clone the project and to the project directory
 ```bash
   git clone https://github.com/and-zee/gd-compress-image.git app && cd app
 ```
 
-Export env and update python
+Export env, update python binary alias, and create python3 virtual environment
 ```bash
   echo "export env='/opt/app/.env'" | tee -a ~/.bashrc
   echo "export python3='/opt/env/bin/python3'" | tee -a ~/.bashrc
   echo "export pip3='/opt/env/bin/pip3'" | tee -a ~/.bashrc
   . ~/.bashrc
+  python3 -m venv env
+  . env/bin/activate
 ```
 
 Install required module
