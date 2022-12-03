@@ -31,8 +31,8 @@ Clone the project and to the project directory
 Export env, update python binary alias, and create python3 virtual environment
 ```bash
   echo "export env='/opt/app/.env'" | tee -a ~/.bashrc
-  echo "alias python-gd='/opt/env/bin/python3'" | tee -a ~/.bashrc
-  echo "alias pip-gd='/opt/env/bin/pip3'" | tee -a ~/.bashrc
+  echo "alias python-3='/opt/env/bin/python3'" | tee -a ~/.bashrc
+  echo "alias pip-3='/opt/env/bin/pip3'" | tee -a ~/.bashrc
   python3 -m venv env
   . ~/.bashrc
   . /opt/env/bin/activate
@@ -41,12 +41,12 @@ Export env, update python binary alias, and create python3 virtual environment
 
 Install required module
 ```bash
-  pip-gd install -r requirements.txt
+  pip-3 install -r requirements.txt
 ```
 
 Test if all module are installed correctly
 ```bash
-  python-gd main.py --test
+  python-3 main.py --test
 ```
 
 Update .env
@@ -57,5 +57,5 @@ Update .env
 
 Start the program
 ```bash
-python-gd main.py
+python-3 main.py
 ```
