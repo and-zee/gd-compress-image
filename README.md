@@ -53,5 +53,5 @@ Update .env
 
 Start the program
 ```bash
-pyrhon3 main.py
+python3 main.py
 ```
