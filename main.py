@@ -260,6 +260,7 @@ def init():
             print("variable loaded from env")
         sys.exit()
     
+    from dotenv import load_dotenv
     dotenv_path = Path(str(os.environ["env"]))
     load_dotenv(dotenv_path=dotenv_path)
     is_replace=str(os.getenv('REPLACE'))
