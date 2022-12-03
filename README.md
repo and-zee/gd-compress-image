@@ -29,7 +29,7 @@ Export env, update python binary alias, and create python3 virtual environment
   echo "export pip3='/opt/env/bin/pip3'" | tee -a ~/.bashrc
   . ~/.bashrc
   python3 -m venv env
-  . env/bin/activate
+  . /opt/env/bin/activate
 ```
 
 Install required module
