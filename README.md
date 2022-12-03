@@ -1,6 +1,7 @@
 # Compress Image
 
 GreatDay Image Compress
+JPG/JPEG only
 
 ## Run Locally
 
