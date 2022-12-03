@@ -8,6 +8,7 @@ import math
 import logging
 from pathlib import Path
 import time
+import sys
 
 def convert_size(size_bytes):
    if size_bytes == 0:
@@ -150,9 +151,7 @@ def main(_basepath, only=False, onlyreplace=False, replace=False):
             logger.info("Compressed directory : {}".format(account_dir))
         logger.info("Done")
         elapsed_time = time.time() - st
-        logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
-
-        
+        logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))     
     else:
         formats = ('.jpg', '.jpeg')
         dotenv_path = Path(str(os.environ["env"]))
@@ -239,8 +238,29 @@ def checkParam():
     
     return only, basepath, onlyreplace
 
+def paramTest():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--test', default=False, action='store_true')
+    args = parser.parse_args()
+    
+    if args.test: return True
+    else: return False
+
 # Driver code
 if __name__ == "__main__":
+    test = paramTest()
+    if test:
+        from PIL import Image
+        from dotenv import load_dotenv
+        dotenv_path = Path(str(os.environ["env"]))
+        load_dotenv(dotenv_path=dotenv_path)
+        _test=str(os.getenv('TEST'))
+        if not _test and _test == "None": print("No variable loaded")
+        else:
+            print("[-] :", _test)
+            print("variable loaded from env")
+        sys.exit()
+    
     dotenv_path = Path(str(os.environ["env"]))
     load_dotenv(dotenv_path=dotenv_path)
     is_replace=str(os.getenv('REPLACE'))
