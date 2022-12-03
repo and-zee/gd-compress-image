@@ -264,9 +264,9 @@ def init():
     dotenv_path = Path(str(os.environ["env"]))
     load_dotenv(dotenv_path=dotenv_path)
     is_replace=str(os.getenv('REPLACE'))
-    if is_replace: _replace=is_replace          # Variable defined with its value
-    elif is_replace == "None": _replace=False   # No variable defined on .env
-    else: _replace=False                        # Variable defined but with no value or with value False
+    if is_replace == "True": _replace=is_replace    # Variable defined with its value
+    elif is_replace == "None": _replace=False       # No variable defined on .env
+    else: _replace=False                            # Variable defined but with no value or with value False
     
     _only, _basepath, _onlyreplace = checkParam()
     main(_basepath=str(_basepath), only=_only, onlyreplace=_onlyreplace, replace=_replace)
