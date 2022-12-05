@@ -23,7 +23,7 @@ def compressImg(src_file, destpath, filename):
     picture = Image.open(src_file)
     img_size = os.path.getsize(src_file)
         
-    file_compressed = destpath+"/Compressed_"+filename
+    file_compressed = destpath+"/"+filename
     picture.save(file_compressed,
                     optimize = True,
                     quality = 'low')
@@ -105,6 +105,46 @@ def main(_basepath, debug=False, debugreplace=False, replace=False, replacePath=
         logger.info("Done")
         elapsed_time = time.time() - st
         logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
+    elif replacePath: 
+        formats = ('.jpg', '.jpeg')
+        
+        log_file = Path(str(_basepath)+'/_process.log')
+        if not os.path.exists(log_file): log_file.touch(exist_ok=True)
+        logger = logging.getLogger()
+        logger.setLevel(logging.NOTSET)
+        log_handler = logging.FileHandler(log_file)
+        log_handler.setLevel(logging.INFO)
+        log_handler_format = '%(asctime)s : %(message)s'
+        log_handler.setFormatter(logging.Formatter(log_handler_format))
+        logger.addHandler(log_handler)
+        
+        account_dir=_basepath
+        
+        for month in os.listdir(str(account_dir)):
+            # Loop through all days
+            days = str(account_dir)+"/"+month
+            basefilename=os.path.basename(days)
+            if basefilename == "_process.log": continue
+            for day in os.listdir(days):
+                # Loop through all hours
+                hours = str(days)+"/"+day
+                for hour in os.listdir(hours):
+                    # Loop through all files
+                    src_dir=str(hours)+"/"+hour
+                    for file in os.listdir(src_dir):
+                        filepath=str(src_dir)+"/"+file
+                        if os.path.splitext(file)[1].lower() in formats:
+                            logger.info("Compressing "+str(file))
+                            img_size, new_img_size = compressReplaceImg(filepath)
+                            saving_diff = new_img_size - img_size
+                            logger.info("[+] Original image size: {}".format(convert_size(img_size)))
+                            logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
+                            logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
+                        else: logger.error("Unsupported file format")
+        logger.info("Compressed directory : {}".format(account_dir))
+        logger.info("Done")
+        elapsed_time = time.time() - st
+        logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
     elif replace: 
         formats = ('.jpg', '.jpeg')
         dotenv_path = Path(str(os.environ["env"]))
@@ -151,7 +191,7 @@ def main(_basepath, debug=False, debugreplace=False, replace=False, replacePath=
             logger.info("Compressed directory : {}".format(account_dir))
         logger.info("Done")
         elapsed_time = time.time() - st
-        logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))     
+        logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
     else:
         formats = ('.jpg', '.jpeg')
         dotenv_path = Path(str(os.environ["env"]))
@@ -219,17 +259,22 @@ def main(_basepath, debug=False, debugreplace=False, replace=False, replacePath=
 def checkParam():
     parser = argparse.ArgumentParser()
     subparser = parser.add_subparsers(dest='command')
+    parser.add_argument('--test', default=False, action='store_true')
     debug = subparser.add_parser('debug')
     debugreplace = subparser.add_parser('debugreplace')
+    _replacePath = subparser.add_parser('replace')
     debug.add_argument('--path', type=str, required=True)
     debugreplace.add_argument('--path', type=str, required=True)
+    _replacePath.add_argument('--path', type=str, required=True)
     
     args = parser.parse_args()
     basepath=""
     _debug=False
     _debugreplace=False
+    _test=False
+    _replace=False
     
-    if args.replace: replace=True
+    if args.test: _test=True
     
     if args.command == 'debug':
         _debug=True
@@ -237,19 +282,14 @@ def checkParam():
     elif args.command == 'debugreplace':
         _debugreplace=True
         basepath=args.path
+    elif args.command == 'replace':
+        _replace=True
+        basepath=args.path
     
-    return _debug, _debugreplace, basepath, replace
-
-def paramTest():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--test', default=False, action='store_true')
-    args = parser.parse_args()
-    
-    if args.test: return True
-    else: return False
+    return _debug, _debugreplace, basepath, _test, _replace
 
 def init():
-    test = paramTest()
+    _debug, _debugreplace, _basepath, test, _replacepath = checkParam()
     if test:
         from PIL import Image
         from dotenv import load_dotenv
@@ -270,7 +310,6 @@ def init():
     elif is_replace == "None": _replace=False                               # No variable defined on .env
     else: _replace=False                                                    # Variable defined but with no value or with value False
     
-    _debug, _debugreplace, _basepath, _replacepath = checkParam()
     main(_basepath=str(_basepath), debug=_debug, debugreplace=_debugreplace, replace=_replace, replacePath=_replacepath)
 
 # Driver code
