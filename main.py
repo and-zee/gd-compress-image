@@ -43,9 +43,9 @@ def compressReplaceImg(src_file):
     return img_size, new_img_size
 
 # Define a main function
-def main(_basepath, only=False, onlyreplace=False, replace=False):
+def main(_basepath, debug=False, debugreplace=False, replace=False, replacePath=False):
     st = time.time()
-    if only:
+    if debug:
         formats = ('.jpg', '.jpeg')
         parent_dir=os.path.abspath(os.path.join(_basepath, os.pardir))
         compressed_dir="_compressed"
@@ -77,7 +77,7 @@ def main(_basepath, only=False, onlyreplace=False, replace=False):
         logger.info("Done")
         elapsed_time = time.time() - st
         logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
-    elif onlyreplace:
+    elif debugreplace:
         formats = ('.jpg', '.jpeg')
         
         log_file = Path(str(_basepath)+'/_process.log')
@@ -171,8 +171,7 @@ def main(_basepath, only=False, onlyreplace=False, replace=False):
         for account in os.listdir(str(base_dir)):
             # Loop through all years and month
             account_dir=base_dir+"/"+str(account)
-            compressed_dir="_compressed"
-            destname = account+compressed_dir
+            destname = account
             
             account_dir_compressed = os.path.join(dest_dir, destname)
             if not os.path.exists(account_dir_compressed): os.mkdir(account_dir_compressed)
@@ -220,23 +219,27 @@ def main(_basepath, only=False, onlyreplace=False, replace=False):
 def checkParam():
     parser = argparse.ArgumentParser()
     subparser = parser.add_subparsers(dest='command')
-    only = subparser.add_parser('only')
-    onlyreplace = subparser.add_parser('onlyreplace')
-    only.add_argument('--path', type=str, required=True)
-    onlyreplace.add_argument('--path', type=str, required=True)
+    debug = subparser.add_parser('debug')
+    debugreplace = subparser.add_parser('debugreplace')
+    debug.add_argument('--path', type=str, required=True)
+    debugreplace.add_argument('--path', type=str, required=True)
     
     args = parser.parse_args()
     basepath=""
-    only=False
-    onlyreplace=False
-    if args.command == 'only':
-        only=True
+    debug=False
+    debugreplace=False
+    replace=False
+    
+    if args.replace: replace=True
+    
+    if args.command == 'debug':
+        debug=True
         basepath=args.path
-    elif args.command == 'onlyreplace':
-        onlyreplace=True
+    elif args.command == 'debugreplace':
+        debugreplace=True
         basepath=args.path
     
-    return only, basepath, onlyreplace
+    return debug, basepath, debugreplace, replace
 
 def paramTest():
     parser = argparse.ArgumentParser()
@@ -264,12 +267,12 @@ def init():
     dotenv_path = Path(str(os.environ["env"]))
     load_dotenv(dotenv_path=dotenv_path)
     is_replace=str(os.getenv('REPLACE'))
-    if is_replace == "True": _replace=is_replace    # Variable defined with its value
-    elif is_replace == "None": _replace=False       # No variable defined on .env
-    else: _replace=False                            # Variable defined but with no value or with value False
+    if is_replace == "True" or is_replace == "true": _replace=is_replace    # Variable defined with its value
+    elif is_replace == "None": _replace=False                               # No variable defined on .env
+    else: _replace=False                                                    # Variable defined but with no value or with value False
     
-    _only, _basepath, _onlyreplace = checkParam()
-    main(_basepath=str(_basepath), only=_only, onlyreplace=_onlyreplace, replace=_replace)
+    _debug, _basepath, _debugreplace, _replacepath = checkParam()
+    main(_basepath=str(_basepath), debug=_debug, debugreplace=_debugreplace, replace=_replace, replacePath=_replacepath)
 
 # Driver code
 if __name__ == "__main__":
