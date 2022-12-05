@@ -226,20 +226,19 @@ def checkParam():
     
     args = parser.parse_args()
     basepath=""
-    debug=False
-    debugreplace=False
-    replace=False
+    _debug=False
+    _debugreplace=False
     
     if args.replace: replace=True
     
     if args.command == 'debug':
-        debug=True
+        _debug=True
         basepath=args.path
     elif args.command == 'debugreplace':
-        debugreplace=True
+        _debugreplace=True
         basepath=args.path
     
-    return debug, basepath, debugreplace, replace
+    return _debug, _debugreplace, basepath, replace
 
 def paramTest():
     parser = argparse.ArgumentParser()
@@ -271,7 +270,7 @@ def init():
     elif is_replace == "None": _replace=False                               # No variable defined on .env
     else: _replace=False                                                    # Variable defined but with no value or with value False
     
-    _debug, _basepath, _debugreplace, _replacepath = checkParam()
+    _debug, _debugreplace, _basepath, _replacepath = checkParam()
     main(_basepath=str(_basepath), debug=_debug, debugreplace=_debugreplace, replace=_replace, replacePath=_replacepath)
 
 # Driver code
