@@ -107,8 +107,11 @@ def main(_basepath, debug=False, debugreplace=False, replace=False, replacePath=
         logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
     elif replacePath: 
         formats = ('.jpg', '.jpeg')
+        dotenv_path = Path(str(os.environ["env"]))
+        load_dotenv(dotenv_path=dotenv_path)
+        base_dir=str(os.getenv('ACCOUNT_DIR'))
         
-        log_file = Path(str(_basepath)+'/_process.log')
+        log_file = Path(str(base_dir)+'/_process.log')
         if not os.path.exists(log_file): log_file.touch(exist_ok=True)
         logger = logging.getLogger()
         logger.setLevel(logging.NOTSET)
@@ -118,7 +121,7 @@ def main(_basepath, debug=False, debugreplace=False, replace=False, replacePath=
         log_handler.setFormatter(logging.Formatter(log_handler_format))
         logger.addHandler(log_handler)
         
-        account_dir=_basepath
+        account_dir=base_dir
         
         for month in os.listdir(str(account_dir)):
             # Loop through all days
@@ -262,17 +265,14 @@ def checkParam():
     parser.add_argument('--test', default=False, action='store_true')
     debug = subparser.add_parser('debug')
     debugreplace = subparser.add_parser('debugreplace')
-    _replacePath = subparser.add_parser('replace')
     debug.add_argument('--path', type=str, required=True)
     debugreplace.add_argument('--path', type=str, required=True)
-    _replacePath.add_argument('--path', type=str, required=True)
     
     args = parser.parse_args()
     basepath=""
     _debug=False
     _debugreplace=False
     _test=False
-    _replace=False
     
     if args.test: _test=True
     
@@ -282,14 +282,11 @@ def checkParam():
     elif args.command == 'debugreplace':
         _debugreplace=True
         basepath=args.path
-    elif args.command == 'replace':
-        _replace=True
-        basepath=args.path
     
-    return _debug, _debugreplace, basepath, _test, _replace
+    return _debug, _debugreplace, basepath, _test
 
 def init():
-    _debug, _debugreplace, _basepath, test, _replacepath = checkParam()
+    _debug, _debugreplace, _basepath, test = checkParam()
     if test:
         from PIL import Image
         from dotenv import load_dotenv
@@ -305,12 +302,18 @@ def init():
     from dotenv import load_dotenv
     dotenv_path = Path(str(os.environ["env"]))
     load_dotenv(dotenv_path=dotenv_path)
+    is_replace_all=str(os.getenv('REPLACE_ALL'))
     is_replace=str(os.getenv('REPLACE'))
-    if is_replace == "True" or is_replace == "true": _replace=is_replace    # Variable defined with its value
-    elif is_replace == "None": _replace=False                               # No variable defined on .env
-    else: _replace=False                                                    # Variable defined but with no value or with value False
     
-    main(_basepath=str(_basepath), debug=_debug, debugreplace=_debugreplace, replace=_replace, replacePath=_replacepath)
+    if is_replace == "True" or is_replace == "true": _replace=True     # Variable defined with its value
+    elif is_replace == "None": _replace=False                          # No variable defined on .env
+    else: _replace=False                                               # Variable defined but with no value or with value False
+    
+    if is_replace_all == "True" or is_replace_all == "true": _replaceall=True     # Variable defined with its value
+    elif is_replace_all == "None": _replaceall=False                              # No variable defined on .env
+    else: _replaceall=False                                                       # Variable defined but with no value or with value False
+    
+    main(_basepath=str(_basepath), debug=_debug, debugreplace=_debugreplace, replace=_replaceall, replacePath=_replace)
 
 # Driver code
 if __name__ == "__main__":
