@@ -212,7 +212,9 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
         else:  # Variable defined with its value
             if not os.path.exists(dest_dir): os.mkdir(dest_dir)
             
-        log_file = Path(str(base_dir)+'/_process.log')
+        account_dir_compressed = os.path.join(dest_dir, destname)
+        if not os.path.exists(account_dir_compressed): os.mkdir(account_dir_compressed)
+        log_file = Path(str(account_dir_compressed)+'/_process.log')
         if not os.path.exists(log_file): log_file.touch(exist_ok=True)
         logger = logging.getLogger()
         logger.setLevel(logging.NOTSET)
@@ -224,8 +226,6 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
         
         account_dir=base_dir
         destname=os.path.basename(base_dir)
-        account_dir_compressed = os.path.join(dest_dir, destname)
-        if not os.path.exists(account_dir_compressed): os.mkdir(account_dir_compressed)
         
         for month in os.listdir(str(account_dir)):
             # Loop through all days
@@ -256,7 +256,6 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
         logger.info("Done")
         elapsed_time = time.time() - st
         logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
-            
     elif copyAll:
         formats = ('.jpg', '.jpeg')
         dotenv_path = Path(str(os.environ["env"]))
