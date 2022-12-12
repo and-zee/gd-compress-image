@@ -212,6 +212,8 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
         else:  # Variable defined with its value
             if not os.path.exists(dest_dir): os.mkdir(dest_dir)
             
+        account_dir=base_dir
+        destname=os.path.basename(base_dir)
         account_dir_compressed = os.path.join(dest_dir, destname)
         if not os.path.exists(account_dir_compressed): os.mkdir(account_dir_compressed)
         log_file = Path(str(account_dir_compressed)+'/_process.log')
@@ -223,9 +225,6 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
         log_handler_format = '%(asctime)s : %(message)s'
         log_handler.setFormatter(logging.Formatter(log_handler_format))
         logger.addHandler(log_handler)
-        
-        account_dir=base_dir
-        destname=os.path.basename(base_dir)
         
         for month in os.listdir(str(account_dir)):
             # Loop through all days
