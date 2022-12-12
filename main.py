@@ -48,7 +48,7 @@ def compressReplaceImg(src_file):
 def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceAll=False, copyAcc=False, replaceAcc=False):
     st = time.time()
     if debugcopy:
-        formats = ('.jpg', '.jpeg')
+        formats = ('.jpg', '.jpeg', '.png')
         parent_dir=os.path.abspath(os.path.join(_basepath, os.pardir))
         compressed_dir="_compressed"
         basename=os.path.basename(_basepath)
@@ -68,19 +68,24 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
         
         for file in os.listdir(_basepath):
             filepath=str(_basepath)+"/"+file
-            if os.path.splitext(file)[1].lower() in formats:
-                logger.info("Compressing "+str(file))
-                img_size, new_img_size = compressImg(filepath, destpath, file)
-                saving_diff = new_img_size - img_size
-                logger.info("[+] Original image size: {}".format(convert_size(img_size)))
-                logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
-                logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
-            else: logger.error("Unsupported file format")
+            try:
+                if os.path.splitext(file)[1].lower() in formats:
+                    if os.path.splitext(file)[1].lower() == ".png": logger.info("PNG File - Compressing PNG "+str(file))
+                    else: logger.info("Compressing "+str(file))
+                    img_size, new_img_size = compressImg(filepath, destpath, file)
+                    saving_diff = new_img_size - img_size
+                    logger.info("[+] Original image size: {}".format(convert_size(img_size)))
+                    logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
+                    logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
+                else: logger.error("Unsupported file format")
+            except Exception as e:
+                logger.error("Error : {}".format(e))
+                continue
         logger.info("Done")
         elapsed_time = time.time() - st
         logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
     elif debugreplace:
-        formats = ('.jpg', '.jpeg')
+        formats = ('.jpg', '.jpeg', '.png')
         
         log_file = Path(str(_basepath)+'/_process.log')
         if not os.path.exists(log_file): log_file.touch(exist_ok=True)
@@ -96,19 +101,24 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
             filepath=str(_basepath)+"/"+file
             basefilename=os.path.basename(filepath)
             if basefilename == "_process.log": continue
-            if os.path.splitext(file)[1].lower() in formats:
-                logger.info("Compressing "+str(file))
-                img_size, new_img_size = compressReplaceImg(filepath)
-                saving_diff = new_img_size - img_size
-                logger.info("[+] Original image size: {}".format(convert_size(img_size)))
-                logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
-                logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
-            else: logger.error("Unsupported file format")
+            try:
+                if os.path.splitext(file)[1].lower() in formats:
+                    if os.path.splitext(file)[1].lower() == ".png": logger.info("PNG File - Compressing PNG "+str(file))
+                    else: logger.info("Compressing "+str(file))
+                    img_size, new_img_size = compressReplaceImg(filepath)
+                    saving_diff = new_img_size - img_size
+                    logger.info("[+] Original image size: {}".format(convert_size(img_size)))
+                    logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
+                    logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
+                else: logger.error("Unsupported file format")
+            except Exception as e:
+                logger.error("Error : {}".format(e))
+                continue
         logger.info("Done")
         elapsed_time = time.time() - st
         logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
     elif replaceAcc: 
-        formats = ('.jpg', '.jpeg')
+        formats = ('.jpg', '.jpeg', '.png')
         dotenv_path = Path(str(os.environ["env"]))
         load_dotenv(dotenv_path=dotenv_path)
         base_dir=str(os.getenv('SRC_ACCOUNT_DIR'))
@@ -138,20 +148,25 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
                     src_dir=str(hours)+"/"+hour
                     for file in os.listdir(src_dir):
                         filepath=str(src_dir)+"/"+file
-                        if os.path.splitext(file)[1].lower() in formats:
-                            logger.info("Compressing "+str(file))
-                            img_size, new_img_size = compressReplaceImg(filepath)
-                            saving_diff = new_img_size - img_size
-                            logger.info("[+] Original image size: {}".format(convert_size(img_size)))
-                            logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
-                            logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
-                        else: logger.error("Unsupported file format")
+                        try:
+                            if os.path.splitext(file)[1].lower() in formats:
+                                if os.path.splitext(file)[1].lower() == ".png": logger.info("PNG File - Compressing PNG "+str(file))
+                                else: logger.info("Compressing "+str(file))
+                                img_size, new_img_size = compressReplaceImg(filepath)
+                                saving_diff = new_img_size - img_size
+                                logger.info("[+] Original image size: {}".format(convert_size(img_size)))
+                                logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
+                                logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
+                            else: logger.error("Unsupported file format")
+                        except Exception as e:
+                            logger.error("Error : {}".format(e))
+                            continue
         logger.info("Compressed directory : {}".format(account_dir))
         logger.info("Done")
         elapsed_time = time.time() - st
         logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
     elif replaceAll: 
-        formats = ('.jpg', '.jpeg')
+        formats = ('.jpg', '.jpeg', '.png')
         dotenv_path = Path(str(os.environ["env"]))
         load_dotenv(dotenv_path=dotenv_path)
         base_dir=str(os.getenv('SOURCE_DIR'))
@@ -185,20 +200,25 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
                         src_dir=str(hours)+"/"+hour
                         for file in os.listdir(src_dir):
                             filepath=str(src_dir)+"/"+file
-                            if os.path.splitext(file)[1].lower() in formats:
-                                logger.info("Compressing "+str(file))
-                                img_size, new_img_size = compressReplaceImg(filepath)
-                                saving_diff = new_img_size - img_size
-                                logger.info("[+] Original image size: {}".format(convert_size(img_size)))
-                                logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
-                                logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
-                            else: logger.error("Unsupported file format")
+                            try:
+                                if os.path.splitext(file)[1].lower() in formats:
+                                    if os.path.splitext(file)[1].lower() == ".png": logger.info("PNG File - Compressing PNG "+str(file))
+                                    else: logger.info("Compressing "+str(file))
+                                    img_size, new_img_size = compressReplaceImg(filepath)
+                                    saving_diff = new_img_size - img_size
+                                    logger.info("[+] Original image size: {}".format(convert_size(img_size)))
+                                    logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
+                                    logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
+                                else: logger.error("Unsupported file format")
+                            except Exception as e:
+                                logger.error("Error : {}".format(e))
+                                continue
             logger.info("Compressed directory : {}".format(account_dir))
         logger.info("Done")
         elapsed_time = time.time() - st
         logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
     elif copyAcc: 
-        formats = ('.jpg', '.jpeg')
+        formats = ('.jpg', '.jpeg', '.png')
         dotenv_path = Path(str(os.environ["env"]))
         load_dotenv(dotenv_path=dotenv_path)
         base_dir=str(os.getenv('SRC_ACCOUNT_DIR'))
@@ -245,12 +265,14 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
                         filepath=str(src_dir)+"/"+file
                         try:
                             if os.path.splitext(file)[1].lower() in formats:
-                                logger.info("Compressing "+str(file))
+                                if os.path.splitext(file)[1].lower() == ".png": logger.info("PNG File - Compressing PNG "+str(file))
+                                else: logger.info("Compressing "+str(file))
                                 img_size, new_img_size = compressImg(filepath, dest_dir_compressed, file)
                                 saving_diff = new_img_size - img_size
                                 logger.info("[+] Original image size: {}".format(convert_size(img_size)))
                                 logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
                                 logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
+                            elif os.path.splitext(file)[1].lower() == ".png": pass
                             else: logger.error("Unsupported file format")
                         except Exception as e:
                             logger.error("Error : {}".format(e))
@@ -260,7 +282,7 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
         elapsed_time = time.time() - st
         logger.info("Execution time : "+str(time.strftime("%H:%M:%S", time.gmtime(elapsed_time))))
     elif copyAll:
-        formats = ('.jpg', '.jpeg')
+        formats = ('.jpg', '.jpeg', '.png')
         dotenv_path = Path(str(os.environ["env"]))
         load_dotenv(dotenv_path=dotenv_path)
         base_dir=str(os.getenv('SOURCE_DIR'))
@@ -310,14 +332,19 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
                         if not os.path.exists(dest_dir_compressed): os.mkdir(dest_dir_compressed)
                         for file in os.listdir(src_dir):
                             filepath=str(src_dir)+"/"+file
-                            if os.path.splitext(file)[1].lower() in formats:
-                                logger.info("Compressing "+str(file))
-                                img_size, new_img_size = compressImg(filepath, dest_dir_compressed, file)
-                                saving_diff = new_img_size - img_size
-                                logger.info("[+] Original image size: {}".format(convert_size(img_size)))
-                                logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
-                                logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
-                            else: logger.error("Unsupported file format")
+                            try:
+                                if os.path.splitext(file)[1].lower() in formats:
+                                    if os.path.splitext(file)[1].lower() == ".png": logger.info("PNG File - Compressing PNG "+str(file))
+                                    else: logger.info("Compressing "+str(file))
+                                    img_size, new_img_size = compressImg(filepath, dest_dir_compressed, file)
+                                    saving_diff = new_img_size - img_size
+                                    logger.info("[+] Original image size: {}".format(convert_size(img_size)))
+                                    logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
+                                    logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
+                                else: logger.error("Unsupported file format")
+                            except Exception as e:
+                                logger.error("Error : {}".format(e))
+                                continue
             logger.info("Compressed directory : {}".format(account_dir_compressed))
         logger.info("Done")
         elapsed_time = time.time() - st
