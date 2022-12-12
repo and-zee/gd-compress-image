@@ -243,14 +243,18 @@ def main(_basepath, debugcopy=False, debugreplace=False, copyAll=False, replaceA
                     if not os.path.exists(dest_dir_compressed): os.mkdir(dest_dir_compressed)
                     for file in os.listdir(src_dir):
                         filepath=str(src_dir)+"/"+file
-                        if os.path.splitext(file)[1].lower() in formats:
-                            logger.info("Compressing "+str(file))
-                            img_size, new_img_size = compressImg(filepath, dest_dir_compressed, file)
-                            saving_diff = new_img_size - img_size
-                            logger.info("[+] Original image size: {}".format(convert_size(img_size)))
-                            logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
-                            logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
-                        else: logger.error("Unsupported file format")
+                        try:
+                            if os.path.splitext(file)[1].lower() in formats:
+                                logger.info("Compressing "+str(file))
+                                img_size, new_img_size = compressImg(filepath, dest_dir_compressed, file)
+                                saving_diff = new_img_size - img_size
+                                logger.info("[+] Original image size: {}".format(convert_size(img_size)))
+                                logger.info("[+] Compressed image size: {}".format(convert_size(new_img_size)))
+                                logger.info(f"[+] Image size change: {saving_diff/img_size*100:.2f}% of the original image size.")
+                            else: logger.error("Unsupported file format")
+                        except Exception as e:
+                            logger.error("Error : {}".format(e))
+                            continue
         logger.info("Compressed directory : {}".format(account_dir_compressed))
         logger.info("Done")
         elapsed_time = time.time() - st
